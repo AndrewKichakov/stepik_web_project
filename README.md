@@ -1,0 +1,1 @@
+Это учебный проект по курсу [Web-технологии](https://stepik.org/course/154/syllabus/).
