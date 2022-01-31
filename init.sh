@@ -1,8 +1,8 @@
 sudo apt update
 sudo apt install python3.5
 sudo ln -sf /usr/bin/python3.5 /usr/bin/python3
-sudo pip3 install Django==2.1
-# sudo pip3 install -r requirements.txt
+# sudo pip3 install Django==2.2.24
+sudo pip3 install -r requirements.txt
 
 # sudo ln -sf /home/box/web/etc/nginx.conf /etc/nginx/sites-enabled/default
 # sudo nginx -t
