@@ -1,7 +1,8 @@
 Django==2.2.24
 flake8==4.0.1
 mccabe==0.6.1
+mysqlclient==2.1.1
 pycodestyle==2.8.0
 pyflakes==2.4.0
-pytz==2021.3
+pytz==2022.1
 sqlparse==0.4.2
