@@ -1,3 +1,5 @@
 env/
 __pycache__/
 a_mysql.sh
+requirements.dev.txt
+requirements.py3.txt
