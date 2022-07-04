@@ -53,11 +53,11 @@ class SignupForm(forms.Form):
         username = self.cleaned_data.get('username')
 
         if not username:
-            raise forms.ValidationError('Не задано имя пользователя')
+            raise forms.ValidationError('Username not set')
 
         try:
             User.objects.get(username=username)
-            raise forms.ValidationError('Такой пользователь уже существует')
+            raise forms.ValidationError('Such user already exists')
         except User.DoesNotExist:
             pass
 
@@ -67,7 +67,7 @@ class SignupForm(forms.Form):
         email = self.cleaned_data.get('email')
 
         if not email:
-            raise forms.ValidationError('Не указан адрес электронной почты')
+            raise forms.ValidationError('Email not set')
 
         return email
 
@@ -75,7 +75,7 @@ class SignupForm(forms.Form):
         password = self.cleaned_data.get('password')
 
         if not password:
-            raise forms.ValidationError('Не указан пароль')
+            raise forms.ValidationError('Password not set')
         self.raw_passeord = password
 
         return make_password(password)
@@ -95,7 +95,7 @@ class LoginForm(forms.Form):
         username = self.cleaned_data.get('username')
 
         if not username:
-            raise forms.ValidationError('Не задано имя пользователя')
+            raise forms.ValidationError('Username not set')
 
         return username
 
@@ -103,7 +103,7 @@ class LoginForm(forms.Form):
         password = self.cleaned_data.get('password')
 
         if not password:
-            raise forms.ValidationError('Не указан пароль')
+            raise forms.ValidationError('Password not set')
 
         return password
 
@@ -114,9 +114,7 @@ class LoginForm(forms.Form):
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
-            raise forms.ValidationError('Неверное имя пользователя или \
-                                         пароль1')
+            raise forms.ValidationError('Wrong user or password1')
 
         if not user.check_password(password):
-            raise forms.ValidationError('Неверное имя пользователя или \
-                                         пароль2')
+            raise forms.ValidationError('Wrong user or password2')

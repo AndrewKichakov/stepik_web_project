@@ -1,5 +1,9 @@
 def app(environ, start_response):
-    start_response('200 OK', [('Content-Type', 'text/plain')])
+    status = '200 OK'
+    headers = [('Content-Type', 'text/plain')]
+    start_response(status, headers)
 
-    return [bytes('\r\n'.join(environ['QUERY_STRING'].split('&')),
-                  encoding='utf8')]
+    data = environ['QUERY_STRING'].split('&')
+    body = bytes('\r\n'.join(data), encoding='utf8')
+
+    return [body]
