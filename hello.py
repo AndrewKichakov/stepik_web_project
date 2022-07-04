@@ -4,6 +4,6 @@ def app(environ, start_response):
     start_response(status, headers)
 
     data = environ['QUERY_STRING'].split('&')
-    body = bytes('\r\n'.join(data), encoding='utf8')
+    body = '\n'.join(data).encode('utf-8')
 
     return [body]
