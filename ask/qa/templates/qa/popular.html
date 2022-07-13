@@ -1,6 +1,6 @@
 {% extends "qa/base.html" %}
 
-{% block title %}Главная страница{% endblock %}
+{% block title %}Страница популярных вопросов{% endblock %}
 
 {% block content %}
   <nav>
@@ -19,5 +19,5 @@
 
   {% for question in questions %}
     <p>{{ question.title }} <a href="{{ question.get_url }}">{{ question.id }}</a></p>
-  {% endfor %}
+  {% endfor %} 
 {% endblock %}

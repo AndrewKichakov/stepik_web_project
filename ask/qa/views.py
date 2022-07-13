@@ -1,10 +1,74 @@
-from django.http import HttpResponse
+from django.core.paginator import Paginator, EmptyPage
+from django.http import HttpResponse, Http404
 from django.shortcuts import render
+
+from .models import Question, Answer
 
 
 def test(request, *args, **kwargs):
     return HttpResponse('OK')
 
 
+def paginate(request, qs, baseurl='/'):
+    try:
+        limit = int(request.GET.get('limit', 10))
+    except ValueError:
+        limit = 10
+    if limit > 100:
+        limit = 10
+
+    try:
+        page = int(request.GET.get('page', 1))
+    except ValueError:
+        raise Http404
+
+    paginator = Paginator(qs, limit)
+    paginator.baseurl = baseurl
+
+    try:
+        page = paginator.page(page)
+    except EmptyPage:
+        page = paginator(paginator.num_pages)
+
+    return page, paginator
+
+
 def index(request):
-    return render(request, 'qa/index.html')
+    try:
+        new_questions = Question.objects.new()
+    except Question.DoesNotExist:
+        raise Http404
+    page, paginator = paginate(request, new_questions, '/?page=')
+
+    return render(request, 'qa/index.html', {'page': page,
+                                             'paginator': paginator,
+                                             'questions': page.object_list})
+
+
+def popular(request):
+    try:
+        popular_questions = Question.objects.popular()
+    except Question.DoesNotExist:
+        raise Http404
+    page, paginator = paginate(request, popular_questions, '/popular/?page=')
+
+    return render(request, 'qa/popular.html', {'page': page,
+                                               'paginator': paginator,
+                                               'questions': page.object_list})
+
+
+def question(request, id):
+    if id:
+        try:
+            question = Question.objects.get(pk=id)
+        except Question.DoesNotExist:
+            raise Http404
+        try:
+            answers = Answer.objects.filter(question=question)
+        except Answer.DoesNotExist:
+            raise Http404
+
+        return render(request, 'qa/question.html', {'question': question,
+                                                    'answers': answers})
+
+    return Http404

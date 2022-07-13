@@ -1,0 +1,13 @@
+{% extends "qa/base.html" %}
+
+{% block title %}Страница вопросов{% endblock %}
+
+{% block content %}
+  <h1>{{ question.title }}</h1>
+  <h3>{{ question.text }}</h3>
+  {% for answer in answers %}
+    <ul>
+      <li><p>{{ answer.text }}</p></li>
+    </ul>
+  {% endfor %}
+{% endblock %}
