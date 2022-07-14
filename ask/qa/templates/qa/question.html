@@ -10,4 +10,18 @@
       <li><p>{{ answer.text }}</p></li>
     </ul>
   {% endfor %}
+
+  <h1>Задать новый вопрос</h1>
+  {% for e in form.non_field_errors %}
+    {{ e }}
+  {% endfor %}
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      {% if field.errors %}HAS-ERROR{% endif %}
+      <label>{{ field.label }}</label>
+      <div>{{ field }}</div>
+    {% endfor %}
+    <button type="submit">Сохранить</button>
+  </form>
 {% endblock %}
