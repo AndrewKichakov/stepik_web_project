@@ -1,8 +1,11 @@
+import base64
+
+from django.contrib.auth import login, logout
 from django.core.paginator import Paginator, EmptyPage
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render
 
-from .forms import AnswerForm, AskForm
+from .forms import AnswerForm, AskForm, LoginForm, SignupForm
 from .models import Question, Answer
 
 
@@ -35,6 +38,7 @@ def paginate(request, qs, baseurl='/'):
 
 
 def index(request):
+    print(request.user)
     try:
         new_questions = Question.objects.new()
     except Question.DoesNotExist:
@@ -71,10 +75,11 @@ def question(request, id):
             raise Http404
 
         if request.method == 'POST':
-            form = AnswerForm(request.POST, initial={'question': question.id})
+            form = AnswerForm(request.POST,
+                              initial={'question': question.id})
+            form._user = request.user
             if form.is_valid():
                 question = form.save()
-
         else:
             form = AnswerForm(initial={'question': question.id})
 
@@ -88,6 +93,7 @@ def question(request, id):
 def ask(request):
     if request.method == 'POST':
         form = AskForm(request.POST)
+        form._user = request.user
         if form.is_valid():
             question = form.save()
             url = question.get_url()
@@ -97,3 +103,50 @@ def ask(request):
         form = AskForm()
 
     return render(request, 'qa/ask.html', {'form': form})
+
+
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = form.cleaned_data['user']
+            login(request, user)
+
+            return do_sessionid(username, password)
+    else:
+        form = LoginForm()
+
+    return render(request, 'qa/login.html', {'form': form})
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+
+            return do_sessionid(username, password)
+    else:
+        form = SignupForm()
+
+    return render(request, 'qa/signup.html', {'form': form})
+
+
+def do_sessionid(username, password):
+    sessionid = base64.b64encode(username+password)
+    if sessionid:
+        response = HttpResponseRedirect('/')
+        response.set_cookie('sessionid', sessionid)
+
+        return response
+
+
+def logout_view(request):
+    logout(request)
+
+    return HttpResponseRedirect('/')
