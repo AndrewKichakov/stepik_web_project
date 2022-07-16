@@ -129,6 +129,8 @@ def signup(request):
             form.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
+            user = form.cleaned_data['user']
+            login(request, user)
 
             return do_sessionid(username, password)
     else:

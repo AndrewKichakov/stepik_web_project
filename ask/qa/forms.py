@@ -72,29 +72,34 @@ class SignupForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(SignupForm, self).__init__(*args, **kwargs)
-        self._username = self.cleaned_data['username']
-        self._email = self.cleaned_data['email']
-        self._password = self.cleaned_data['password']
 
     def clean(self):
-        if not self._sername:
+        username = self.cleaned_data['username']
+        email = self.cleaned_data['email']
+        password = self.cleaned_data['password']
+
+        if not username:
             raise forms.ValidationError(u'Please enter a username')
-        if not self._email:
+        if not email:
             raise forms.ValidationError(u'Please enter a email')
-        if not self._password:
+        if not password:
             raise forms.ValidationError(u'Please enter a password')
 
         return self.cleaned_data
 
     def save(self):
+        username = self.cleaned_data['username']
+        email = self.cleaned_data['email']
+        password = self.cleaned_data['password']
+
         # try:
         #     User.objects.get(username=username)
         # except User.DoesNotExist:
         #     raise forms.ValidationError(u'User is in database')
         try:
-            user = User.objects.create(username=self._username,
-                                       email=self._email,
-                                       password=self._password)
+            user = User.objects.create(username=username,
+                                       email=email,
+                                       password=password)
         except User.DoesNotExist:
             raise forms.ValidationError(u'Ooops...')
         self.cleaned_data['user'] = user
